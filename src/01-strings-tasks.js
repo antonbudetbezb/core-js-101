@@ -209,18 +209,18 @@ function getRectangleString(width, height) {
     for (let i = 0; i <= width; i += 1) {
       if (i === 0 && j === 0) {
         result += '┌';
-      } else if (i !== 0 && j === 0 && i !== width - 1) {
-        result += '─';
-      } else if (i === width - 1 && j === 0) {
-        result += '┐';
-      } else if (i === width) {
-        result += '\n';
-      } else if ((i === 0 && j !== 0) || (i === width - 1 && j !== 0)) {
-        result += '│';
-      } else if (i === 0 && j === height - 1) {
-        result += '└';
       } else if (i === width - 1 && j === height - 1) {
         result += '┘';
+      } else if (i === width - 1 && j === 0) {
+        result += '┐';
+      } else if (i === 0 && j === height - 1) {
+        result += '└';
+      } else if (i === 0 || i === width - 1) {
+        result += '│';
+      } else if (i === width) {
+        result += '\n';
+      } else if (j === 0 || j === height - 1) {
+        result += '─';
       } else {
         result += ' ';
       }
@@ -246,8 +246,25 @@ function getRectangleString(width, height) {
  *    => 'NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm'
  *
  */
-function encodeToRot13(/* str */) {
-  throw new Error('Not implemented');
+function encodeToRot13(str) {
+  const alphabetUpper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const alphabetLower = 'abcdefghijklmnopqrstuvwxyz';
+  const arr = str.split('');
+  const result = [];
+  arr.forEach((letter) => {
+    if (' ?!.,'.indexOf(letter) !== -1) {
+      result.push(letter);
+    } else if (letter.toLowerCase() === letter) {
+      const index = alphabetLower.indexOf(letter) + 13 > 25
+        ? alphabetLower.indexOf(letter) - 13 : alphabetLower.indexOf(letter) + 13;
+      result.push(alphabetLower[index]);
+    } else {
+      const index = alphabetUpper.indexOf(letter) + 13 > 25
+        ? alphabetUpper.indexOf(letter) - 13 : alphabetUpper.indexOf(letter) + 13;
+      result.push(alphabetUpper[index]);
+    }
+  });
+  return result.join('');
 }
 
 /**
@@ -263,8 +280,8 @@ function encodeToRot13(/* str */) {
  *   isString('test') => true
  *   isString(new String('test')) => true
  */
-function isString(/* value */) {
-  throw new Error('Not implemented');
+function isString(value) {
+  return typeof value === 'string' || value instanceof String;
 }
 
 
@@ -292,8 +309,12 @@ function isString(/* value */) {
  *   'Q♠' => 50
  *   'K♠' => 51
  */
-function getCardId(/* value */) {
-  throw new Error('Not implemented');
+function getCardId(value) {
+  const cards = ['A♣', '2♣', '3♣', '4♣', '5♣', '6♣', '7♣', '8♣', '9♣', '10♣', 'J♣', 'Q♣', 'K♣',
+    'A♦', '2♦', '3♦', '4♦', '5♦', '6♦', '7♦', '8♦', '9♦', '10♦', 'J♦', 'Q♦', 'K♦',
+    'A♥', '2♥', '3♥', '4♥', '5♥', '6♥', '7♥', '8♥', '9♥', '10♥', 'J♥', 'Q♥', 'K♥',
+    'A♠', '2♠', '3♠', '4♠', '5♠', '6♠', '7♠', '8♠', '9♠', '10♠', 'J♠', 'Q♠', 'K♠'];
+  return cards.indexOf(value);
 }
 
 
