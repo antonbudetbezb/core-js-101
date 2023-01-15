@@ -1,6 +1,15 @@
-function isTriangle(a, b, c) {
-  const arr = [a, b, c];
-  arr.sort((one, two) => one - two);
-  return arr[2] ** 2 <= arr[1] ** 2 + arr[0] ** 2;
+function chainPromises(array, action) {
+  const one = new Promise((resolve, reject) => {
+    const results = [];
+    array.forEach((prom) => prom.then((res) => results.push(res)));
+    resolve(results);
+    reject(results);
+  }).then((results) => results.reduce(action));
+  return one;
 }
-console.log(isTriangle(3, 4, 5));
+
+const promises = [Promise.resolve(1), Promise.resolve(2), Promise.resolve(3)];
+const p = chainPromises(promises, (a, b) => a + b);
+p.then((res) => {
+  console.log(res);
+});
